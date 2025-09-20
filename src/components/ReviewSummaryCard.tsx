@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { FiTrendingUp, FiAward, FiTarget, FiBarChart2 } from 'react-icons/fi';
+import { FiTrendingUp, FiTarget, FiBarChart2, FiCheck } from 'react-icons/fi';
 
 type MetricCardProps = {
   title: string;

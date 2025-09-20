@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlus, FiSearch, FiTrash2, FiEdit2, FiFlag, FiFilter, FiChevronDown } from 'react-icons/fi';
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy, where } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { useAuth } from '../context/AuthContext';
 

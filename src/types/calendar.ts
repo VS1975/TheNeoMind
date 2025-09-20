@@ -1,5 +1,3 @@
-import type { Event as RBCEvent } from 'react-big-calendar';
-
 export interface CalendarEvent {
   id?: string;
   title: string;

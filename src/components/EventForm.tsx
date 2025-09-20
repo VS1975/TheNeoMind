@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FiX, FiCalendar, FiClock } from 'react-icons/fi';
 import { format } from 'date-fns';
 import type { CalendarEvent } from '../types/calendar';
-import { isCalendarEvent } from '../types/calendar';
 
 interface EventFormProps {
   event: Partial<CalendarEvent>;
@@ -30,20 +29,25 @@ export const EventForm: React.FC<EventFormProps> = ({
   onSubmit,
   isSubmitting = false,
 }) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [formData, setFormData] = useState<FormData>({
+    title: event.title || '',
+    description: event.description || '',
+    category: event.category || '',
+    start: event.start ? format(event.start, "yyyy-MM-dd'T'HH:mm") : '',
+    end: event.end ? format(event.end, "yyyy-MM-dd'T'HH:mm") : '',
+    allDay: event.allDay || false,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    const updatedEvent: Omit<CalendarEvent, 'id' | 'resource'> = {
-      ...event,
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      category: formData.get('category') as string,
-      allDay: formData.get('allDay') === 'on',
-    };
-
-    onSubmit(updatedEvent);
+    if (!formData.start || !formData.end) return;
+    
+    onSubmit({
+      ...formData,
+      start: new Date(formData.start),
+      end: new Date(formData.end),
+      allDay: formData.allDay,
+    });
   };
 
   return (
@@ -68,7 +72,8 @@ export const EventForm: React.FC<EventFormProps> = ({
             type="text"
             id="title"
             name="title"
-            defaultValue={event.title}
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             required
             className="w-full p-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary/50 focus:outline-none"
           />
@@ -81,7 +86,8 @@ export const EventForm: React.FC<EventFormProps> = ({
           <textarea
             id="description"
             name="description"
-            defaultValue={event.description}
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             rows={3}
             className="w-full p-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary/50 focus:outline-none"
           />
@@ -95,9 +101,9 @@ export const EventForm: React.FC<EventFormProps> = ({
             </div>
             <input
               type="datetime-local"
-              defaultValue={format(event.start, "yyyy-MM-dd'T'HH:mm")}
+              value={formData.start}
+              onChange={(e) => setFormData({ ...formData, start: e.target.value })}
               className="w-full p-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary/50 focus:outline-none"
-              disabled
             />
           </div>
 
@@ -108,9 +114,9 @@ export const EventForm: React.FC<EventFormProps> = ({
             </div>
             <input
               type="datetime-local"
-              defaultValue={format(event.end, "yyyy-MM-dd'T'HH:mm")}
+              value={formData.end}
+              onChange={(e) => setFormData({ ...formData, end: e.target.value })}
               className="w-full p-2 border rounded-lg bg-background focus:ring-2 focus:ring-primary/50 focus:outline-none"
-              disabled
             />
           </div>
         </div>
